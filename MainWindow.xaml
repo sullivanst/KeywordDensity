@@ -1,0 +1,62 @@
+﻿<Window x:Class="KeywordDensity.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:KeywordDensity"
+		mc:Ignorable="d"
+		Title="Keyword Frequency" Height="350" Width="525" Loaded="Window_Loaded"
+		>
+	<TabControl>
+		<TabItem Header="Wordcloud">
+			<Grid local:MarginSetter.Margin="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+
+				<Label Grid.Row="0" Grid.Column="0">Document:</Label>
+				<Label x:Name="lblDocument" Grid.Row="0" Grid.Column="1"/>
+				<Button Grid.Row="0" Grid.Column="2" Click="Choose_OnClick">Choose...</Button>
+				<Button Grid.Row="0" Grid.Column="3" Click="AnalyzeClick">Analyze</Button>
+
+				<Label Grid.Row="1" Grid.Column="0">Stem Words:</Label>
+				<CheckBox x:Name="cbStem" Grid.Row="1" Grid.Column="1" IsChecked="True" Checked="CbStemOnChecked" VerticalAlignment="Center"/>
+
+				<Image x:Name="imgWordcloud" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"/>
+			</Grid>
+		</TabItem>
+		<TabItem Header="Stopwords">
+			<Grid local:MarginSetter.Margin="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*"></RowDefinition>
+					<RowDefinition Height="*"></RowDefinition>
+					<RowDefinition Height="*"></RowDefinition>
+				</Grid.RowDefinitions>
+
+				<Label Grid.Row="0" Grid.Column="0">Common:</Label>
+				<ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+					<TextBlock x:Name="tbCommonStopwords"  />
+				</ScrollViewer>
+
+				<Label Grid.Row="1" Grid.Column="0">Add:</Label>
+				<TextBox x:Name="tbAddStopwords" Grid.Row="1" Grid.Column="1" TextChanged="tbAddStopwords_OnTextChanged" VerticalScrollBarVisibility="Auto"/>
+
+				<Label Grid.Row="2" Grid.Column="0">Remove:</Label>
+				<TextBox x:Name="tbRemoveStopwords" Grid.Row="2" Grid.Column="1" TextChanged="tbRemoveStopwords_OnTextChanged" VerticalScrollBarVisibility="Auto"/>
+				
+			</Grid>
+		</TabItem>
+	</TabControl>
+</Window>
