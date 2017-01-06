@@ -24,7 +24,6 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Iveonik.Stemmers;
 
 using Path = System.IO.Path;
-using WordCloud = WordCloud.WordCloud;
 
 namespace KeywordDensity
 {
@@ -161,31 +160,6 @@ namespace KeywordDensity
 		void Choose_OnClick(object sender, RoutedEventArgs e)
 		{
 			throw new NotImplementedException();
-		}
-
-		async Task RenderImage()
-		{
-			var counts = cbStem.IsChecked == true ? _stemCounts : _wordCounts;
-			if (null == counts)
-			{
-				imgWordcloud.Source = null;
-				return;
-			}
-
-			var w = (int)imgWordcloud.ActualWidth;
-			var h = (int)imgWordcloud.ActualHeight;
-
-			imgWordcloud.Source = await Task.Run(() =>
-			                                     {
-				                                     var words = new List<string>(counts.Count);
-				                                     var freq = new List<int>(counts.Count);
-				                                     foreach (var kvp in counts)
-				                                     {
-					                                     words.Add(kvp.Key);
-					                                     freq.Add(kvp.Value);
-				                                     }
-				                                     return ImageConverter.Convert(new global::WordCloud.WordCloud(w, h).Draw(words, freq));
-			                                     }).ConfigureAwait(false);
 		}
 
 		async void CbStemOnChecked(object sender, RoutedEventArgs e)
