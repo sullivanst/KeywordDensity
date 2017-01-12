@@ -261,16 +261,11 @@ namespace KeywordDensity
 			                                                   cts.Token),
 			                               cts.Token);
 
-			
+			_layoutRoot.Children.Clear();
+			_layoutRoot.Children.Add(rendering);
 		}
 
-		class GenerateResults
-		{
-			BitmapSource Bitmap { get; set; }
-			QuadTree<Symbol>  Symbols { get; set; }
-		}
-
-		GenerateResults GenerateImage(
+		StackPanel GenerateImage(
 			IEnumerable<WordCloudEntry> entries,
 			double playingFieldProportion,
 			double verticalFraction,
@@ -285,7 +280,7 @@ namespace KeywordDensity
 		{
 			// Use same seed every time so rendering same words gets same result.
 			var random = new Random(54321);
-			var symbols =
+			var symbolsEnum =
 					from e in entries
 					group e by groupByStem ? WordCloudEntry.StemGetter : WordCloudEntry.WordGetter
 					into g
@@ -297,10 +292,31 @@ namespace KeywordDensity
 						Highlight = g.Any(ge => ge.Highlight)
 					};
 			if (maxWords > 0 && maxWords < int.MaxValue)
-				symbols = symbols.OrderByDescending(s => s.Highlight).ThenBy(s => s.Count).Take(maxWords).ToList();
-			symbols = symbols.OrderByDescending(s => s.Count).ToList(); // No more of that deferred eval stuff!
+				symbolsEnum = symbolsEnum.OrderByDescending(s => s.Highlight).ThenBy(s => s.Count).Take(maxWords).ToList();
+			var symbols = symbolsEnum.OrderByDescending(s => s.Count).ToList(); // No more of that deferred eval stuff!
 
 
+		}
+
+		WriteableBitmap ExpandBitmap(WriteableBitmap current)
+		{
+			var newBitmap = new WriteableBitmap(current.PixelWidth * 2, current.PixelHeight * 2, current.DpiX, current.DpiY, current.Format, current.Palette);
+			try
+			{
+				current.Lock();
+				newBitmap.WritePixels(
+					new Int32Rect(0, 0, current.PixelWidth, current.PixelHeight),
+					current.BackBuffer,
+					current.BackBufferStride * current.PixelHeight,
+					current.BackBufferStride,
+					current.PixelWidth / 2,
+					current.PixelHeight / 2);
+			}
+			finally
+			{
+				current.Unlock();
+			}
+			return newBitmap;
 		}
 
 		Point GetSpiralPoint(int step, double growthRate = 7/(2*Math.PI))
